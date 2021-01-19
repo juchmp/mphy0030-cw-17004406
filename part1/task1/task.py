@@ -11,7 +11,7 @@ voxdims = mat_data['voxdims'].astype('float32')
 file_to_read = simple_image_write(vol)
 
 vol_bin = simple_image_read(file_to_read) # currently a 1d array but want 3d array
-vol_bin = np.reshape(vol_bin, (224,224,30))
+vol_bin = np.reshape(vol_bin, vol.shape)
 
 ## Plots
 
