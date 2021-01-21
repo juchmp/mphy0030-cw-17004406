@@ -11,9 +11,8 @@ class Image3D():
 
 class FreeFormDeformation():
 
-    def __init__(self, image3d, n_control = 3, r_control, voxdims):
+    def __init__(self, n_control = 3, r_control, voxdims):
 
-        self.image3d = image3d
         self.n_control = n_control
         self.range = r_control/voxdims # [[0,2],[0,2],[0,2]]
 
@@ -34,6 +33,22 @@ class FreeFormDeformation():
         
         return new_coords
 
-    def warp_image(image3d, RBFSpline):
+    def warp_image(self, image, query):
+
+        image_obj = Image3D(image)
+        rbf = RBFSpline(self.coords, self.random_transform_generator(), self.n_control)
+
+        new_vox = rbf.evaluate(query)
+        warp_image = image_obj
+        warp_image[query] = new_vox 
+
+        return warp_image
+
+    def random_transform(self, image):
+
+        query = self.random_transform_generator()
+        warp_image = self.warp_image(image, query)
+
+        return warp_image
 
 
