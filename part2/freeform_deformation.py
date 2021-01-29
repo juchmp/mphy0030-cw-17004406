@@ -55,20 +55,23 @@ class FreeFormDeformation():
 
         rbf = RBFSpline(self.coords, self.random_transform_generator(image), query, self.n_control)
 
-        new_vox = rbf.evaluate(query, cont=self.coords, n=self.n_control)
-        print(new_vox)
+        new_vox = rbf.evaluate()
+        print(new_vox[0][1])
         warp_image = image
         
         for i in range(self.n_control):
+            print(new_vox[i][1])
+            print(query[i][1])
             warp_image[new_vox[i][0], new_vox[i][1], new_vox[i][2]] = warp_image[query[i][0], query[i][1], query[i][2]]
-
+            print(i)
+            
         return warp_image
 
     def random_transform(self, vol):
 
         query = np.array(([40,75,20], [40,150,20], [100,75,20],\
-            [100,150,20], [0,0,20], [0,vol.shape[1],20], [vol.shape[0],0,20],\
-                [vol.shape[0], vol.shape[1], 20]))
+            [100,150,20], [0,0,20], [0,vol.shape[1]-1,20], [vol.shape[0]-1,0,20],\
+                [vol.shape[0]-1, vol.shape[1]-1, 20]))
         warp_image = self.warp_image(vol, query)
 
         return warp_image

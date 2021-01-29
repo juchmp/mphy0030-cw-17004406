@@ -13,13 +13,13 @@ ffd = FreeFormDeformation(ran, image.vol)
 
 new_image = ffd.random_transform(vol=image.vol)
 fig = plt.figure()
-plt.imshow(new_image, cmap='gray')
-
-z = [5, 10, 20, 25, 30]
-for i in range(9):
-    new_images = ffd.random_transform(image=image.vol)
-    fig = plt.figure()
-    for j,k in z:
-        ax = fig.add_subplot(1,5,k)
-        plt.imshow(new_images[:,:,j], cmap='gray')
+plt.imshow(new_image[:,:,20], cmap='gray')
+plt.show()
+#z = [5, 10, 20, 25, 30]
+#for i in range(9):
+ #   new_images = ffd.random_transform(image=image.vol)
+  #  fig = plt.figure()
+   # for j,k in z:
+    #    ax = fig.add_subplot(1,5,k)
+     #   plt.imshow(new_images[:,:,j], cmap='gray')
 
