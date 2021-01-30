@@ -9,22 +9,23 @@ def gradient_descent(f, var, coeffs, step, n_iter, tol, grad_func):
    
     while min(step) > tol and count < n_iter:
         pre_vars = var
-        var = var - rate*grad_func(f, pre_vars, coeffs)
+        if (grad_func(f, pre_vars, coeffs) >= 0).all():
+            var = var - rate*grad_func(f, pre_vars, coeffs)
+        else:
+            var = var + rate*grad_func(f, pre_vars, coeffs)
         step = abs(var - pre_vars)
         count = count + 1
-        #print(var, count, step, min(step))
-    #for i in range(1, n_iter):
-     #   step = 2*step
-      #  while f(vars - step*grad) >= f(vars):
-       #     step = 1/2
-        #vars = vars - step*grad
-
+    if count > n_iter:
+        print('Maximum number of iterations reached')
+    else: 
+        print('Step size now too small compared to tolerance value')
     return var
 
 def finite_difference_gradient(f, var, coeffs):
 
     '''The function outputs all the estimated partial  
     derivatives for the input vector variable.'''
+
     grad = []
     h = 1e-5
     for i, _ in enumerate(var):
@@ -33,7 +34,7 @@ def finite_difference_gradient(f, var, coeffs):
             if i==j:
                 d.append(vars_j + h)
             else:
-                d.append(vars_j)
+                d.append(vars_j) 
         diff = (f(d, coeffs) - f(var, coeffs)) / h
         grad.append(diff)
 
