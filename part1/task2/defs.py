@@ -3,10 +3,10 @@ from numpy.linalg import det, multi_dot, inv
 from numpy import pi, exp, matmul, sqrt, var, log, abs
 from scipy.stats import norm
 
-def bi_gaussian_pdf(x, mu, sig):
+def tri_gaussian_pdf(x, mu, sig):
 
-    N = 2*pi*sqrt(det(sig))
-    mat_mul = np.einsum('...k,kl,...l->...', x-mu, inv(sig), x-mu)
+    N = ((2*pi)**(3/2))*sqrt(det(sig))
+    mat_mul = np.einsum('...j,jk,...k', x-mu, inv(sig), x-mu)
     pdf = exp(-1/2 * mat_mul) / N
     #for i in range(x.shape[0]):
      #   p = 1 / (2*pi*sqrt(det(sig))) \

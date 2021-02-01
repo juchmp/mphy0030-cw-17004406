@@ -1,24 +1,24 @@
 import numpy as np
 from numpy import random as rd
-from defs import bi_gaussian_pdf, solve_eq, circle_cords
+from defs import tri_gaussian_pdf, solve_eq, circle_cords
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, PathPatch
 from mpl_toolkits.mplot3d import Axes3D, art3d
 
-x = rd.rand(2, 10000) # randomly generating 10,000 samples of vector x
-x1 = np.sort(x[0,:], axis=None)
-x2 = np.sort(x[1,:], axis=None)
+x = rd.rand(10000, 3) # randomly generating 10,000 samples of vector x
+x1 = np.sort(x[:,0], axis=None)
+x2 = np.sort(x[:,1], axis=None)
 x1, x2 = np.meshgrid(x1, x2)
 
-mu = np.mean(x, axis=1)
+mu = np.mean(x, axis=0)
 sig = np.cov(x)
 
-pos = np.empty(x1.shape + (2,), dtype='float32') # creates empty array of 10000 by 10000 by 2
-pos[:,:,0] = x1 # set first 10000 by 10000 grid to x1 values and the next to x2 values
-pos[:,:,1] = x2
+#pos = np.empty(x1.shape + (2,), dtype='float32') # creates empty array of 10000 by 10000 by 2
+#pos[:,:,0] = x1 # set first 10000 by 10000 grid to x1 values and the next to x2 values
+#pos[:,:,1] = x2
 
-pdf = bi_gaussian_pdf(pos, mu, sig)
-
+pdf = tri_gaussian_pdf(x, mu, sig)
+print(pdf)
 perc10, perc50, perc90 = np.percentile(pdf, [10,50,90])
 
 
