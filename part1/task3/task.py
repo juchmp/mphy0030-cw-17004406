@@ -1,73 +1,63 @@
 import numpy as np
 from numpy.polynomial import polynomial
-from defs import finite_difference_gradient, gradient_descent, second_derivative
+from defs import quadratic_polynomial, finite_difference_gradient, gradient_descent, second_derivative
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def quadratic_polynomial(x, a):
 
-    ''' Computes a multivariate polynomial of degree 2 for three 
-    variables. Returns a scalar value.'''     
-    
-    y = a[1]*x[0]**2 + a[2]*x[1]**2 + a[3]*x[2]**2 + a[4]*x[0]*x[1] + \
-        a[5]*x[0]*x[2] + a[6]*x[1]*x[2] + a[7]*x[0] + a[8]*x[1] + a[9]*x[2] + a[0]
-
-    return y
-
-x_init = np.array([-50, -50, 0]).reshape((3,1)) # reasonable guess for y to be min
-
+# Initialising parameters
+x_init = np.array([100, 100, 100]).reshape((3,1))
 a = np.random.rand(10,1)*10
-y = quadratic_polynomial(x_init, a)
+y_init = quadratic_polynomial(x_init, a)
 
 ''' Finite difference'''
 grad = finite_difference_gradient(quadratic_polynomial, x_init, a)
 
 '''Gradient descent '''
-opt_x = gradient_descent(quadratic_polynomial, x_init, a, np.array([1,1,1]), 10000, 0.0000001, finite_difference_gradient)
-print(opt_x)
-min_y = quadratic_polynomial(opt_x, a)
+n_iter = 100000
+min_x = gradient_descent(quadratic_polynomial, x_init, a, np.array([1,1,1]), n_iter, 0.00001, finite_difference_gradient)
+min_y = quadratic_polynomial(min_x, a)
 
 ''' Arithmetic verification of gradient descent result''' 
 # Check gradient at points outputted by gradient descent
-grad_min = finite_difference_gradient(quadratic_polynomial, opt_x, a)
-print(grad_min) # outputs close to 0
+grad_min = finite_difference_gradient(quadratic_polynomial, min_x, a)
+print('\nFirst derivative at gradient descent minimum computed:\n', grad_min) # outputs close to 0
 
-# Second derivative check
-grad2_min = second_derivative(finite_difference_gradient, quadratic_polynomial, opt_x, a)
-#print(grad2_min)
+# Second derivative sign check
+grad2_min = second_derivative(finite_difference_gradient, quadratic_polynomial, min_x, a)
+if grad2_min.all() > 0:
+    print('The gradient descent result is a local minimum due to positive second derivative \n')
+if grad2_min.all() == 0:
+    print('The gradient descent result is at an inflexion point due to second derivative = 0 \n')
 
 ''' Visual verification of gradient descent result '''
 fig = plt.figure()
-x = y = np.linspace(-100, 100)
-x, y = np.meshgrid(x, y)
-ax = fig.add_subplot(2,3,1, projection='3d')
-ax.plot_surface(x, y, quadratic_polynomial([x,y,-100],a))
-ax = fig.add_subplot(2,3,2, projection='3d')
-ax.plot_surface(x, y, quadratic_polynomial([x,y,-50],a))
-ax = fig.add_subplot(2,3,3, projection='3d')
-ax.plot_surface(x, y, quadratic_polynomial([x,y,0],a))
-ax = fig.add_subplot(2,3,4, projection='3d')
-ax.plot_surface(x, y, quadratic_polynomial([x,y,20],a))
-ax = fig.add_subplot(2,3,5, projection='3d')
-ax.plot_surface(x, y, quadratic_polynomial([x,y,50],a))
-ax = fig.add_subplot(2,3,6, projection='3d')
-ax.plot_surface(x, y, quadratic_polynomial([x,y,100],a))
 
-fig = plt.figure()
-x1 = np.linspace(opt_x[0]-10, opt_x[0]+10)
-x2 = np.linspace(opt_x[1]-10, opt_x[1]+10)
+# Pre gradient descent
+x1 = np.linspace(x_init[0]-100, x_init[0]+100)
+x2 = np.linspace(x_init[1]-100, x_init[1]+100)
 x1, x2 = np.meshgrid(x1, x2)
-x3 = [opt_x[2]-10, opt_x[2], opt_x[2]+10]
 
-ax = fig.add_subplot(1, 3, 1, projection='3d') 
-ax.plot_surface(x1, x2, quadratic_polynomial([x1,x2,x3[0]],a))
+ax = fig.add_subplot(1,2,1, projection='3d')
+ax.plot_surface(x1, x2, quadratic_polynomial([x1,x2,x_init[2]],a), alpha=0.9)
+ax.scatter(x_init[0], x_init[1], y_init, c='r', marker='x')
+ax.set_title('Starting point of gradient descent \n (x3 = %d)' % x_init[2], fontsize=10)
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.tick_params(labelsize=8)
 
-ax = fig.add_subplot(1,3,2, projection='3d')
-ax.plot_surface(x1, x2, quadratic_polynomial([x1,x2,x3[1]],a))
-ax.scatter(opt_x[0], opt_x[1], min_y, c='r')
+# Post gradient descent
+min_x1 = np.linspace(min_x[0]-100, min_x[0]+100)
+min_x2 = np.linspace(min_x[1]-100, min_x[1]+100)
+min_x1, min_x2 = np.meshgrid(min_x1, min_x2)
 
-ax = fig.add_subplot(1,3,3, projection='3d')
-ax.plot_surface(x1, x2, quadratic_polynomial([x1,x2,x3[2]],a))
+ax = fig.add_subplot(1,2,2, projection='3d')
+ax.plot_surface(min_x1, min_x2, quadratic_polynomial([min_x1, min_x2, min_x[2]],a), alpha=0.9)
+ax.scatter(min_x[0], min_x[1], min_y, c='r', marker='x')
+ax.set_title('Gradient descent result (x3 = %d) \n Max number of iterations set = ' % min_x[2] + str(n_iter), fontsize=10)
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.tick_params(labelsize=8)
 
-plt.show()
+#plt.show()
 plt.savefig('task3.png')

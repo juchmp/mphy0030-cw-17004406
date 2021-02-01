@@ -2,7 +2,26 @@ import numpy as np
 
 def lowpass_mesh_smoothing(vert, tris, n_iter=10, lamb=0.9, mu=-1.02):
     ''' The function outputs a list of vertices with adjusted
-    point coordinates, representing the smoothed surface.'''
+    point coordinates, representing the smoothed surface.
+    
+    Parameters
+    ----------
+    vert : array-like, shape(number of vertices, number of dimensions)
+        Matrix of vertices' coordinates.
+    tris : array-like, shape(number of triangles, 3)
+        Matrix of vertices' neighbours forming triangles.
+    n_iter : scalar, default = 10
+        Number of iterations.
+    lamb : scalar, default = 0.9
+        Weighting regularisation parameter 
+    mu : scalar, default = -1.02
+        Reduction parameter.
+    
+    Returns
+    -------
+    new_points : array-like, shape(number of vertices, number of dimensions)
+        New point coordinates representing smoothed surface.
+    '''
 
     new_points = []
 
