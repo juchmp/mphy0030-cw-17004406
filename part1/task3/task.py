@@ -28,7 +28,7 @@ grad2_min = second_derivative(finite_difference_gradient, quadratic_polynomial, 
 if grad2_min.all() > 0:
     print('The gradient descent result is a local minimum due to positive second derivative \n')
 if grad2_min.all() == 0:
-    print('The gradient descent result is at an inflexion point due to second derivative = 0 \n')
+    print('The gradient descent result is at an inflexion point due to second derivative = 0 \n Please run again to try a different polynomial')
 
 ''' Visual verification of gradient descent result '''
 fig = plt.figure()
